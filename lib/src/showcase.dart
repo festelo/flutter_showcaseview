@@ -17,6 +17,7 @@ class Showcase extends StatefulWidget {
   final Color overlayColor;
   final void Function(BuildContext context) onOverlayTap;
   final ShapeBorder shapeBorder;
+  final bool childPadding;
 
   Showcase({
     @required this.child,
@@ -26,7 +27,8 @@ class Showcase extends StatefulWidget {
     this.shapeBorder,
     this.key,
     this.overlayColor = Colors.black87,
-    this.onOverlayTap
+    this.onOverlayTap,
+    this.childPadding
   }): assert(
       child != null
     ),
@@ -87,7 +89,10 @@ class _ShowcaseState extends BaseShowcaseState<Showcase> {
               size: size,
               shapeBorder: widget.shapeBorder,
               containerSize: containerSize,
-              childPadding: false,
+              childPadding: widget.childPadding,
+              bottomTip: widget.bottomTip,
+              tip: widget.tip,
+              topTip: widget.tip,
             ),
           ],
         ),
@@ -161,7 +166,6 @@ class TargetWidget extends StatelessWidget {
       if(top-10 >= 0)
       Container(
         height: top-10, 
-        color: Colors.blue,
         child: topTip == null ? null : topTip,
       ),
       SizedBox(height: 10,),
