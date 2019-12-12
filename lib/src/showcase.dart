@@ -15,6 +15,7 @@ class Showcase extends StatefulWidget {
   final Widget bottomTip;
   final Widget tip;
   final Color overlayColor;
+  final EdgeInsets overlayPadding;
   final void Function(BuildContext context) onOverlayTap;
   final ShapeBorder shapeBorder;
   final bool childPadding;
@@ -26,9 +27,10 @@ class Showcase extends StatefulWidget {
     this.tip,
     this.shapeBorder,
     this.key,
+    this.overlayPadding = EdgeInsets.zero,
     this.overlayColor = Colors.black87,
     this.onOverlayTap,
-    this.childPadding
+    this.childPadding = false
   }): assert(
       child != null
     ),
@@ -71,7 +73,9 @@ class _ShowcaseState extends BaseShowcaseState<Showcase> {
         child: Stack(
           children: [
             GestureDetector(
-              onTap: () => widget.onOverlayTap(context),
+              onTap: () => widget.onOverlayTap != null 
+                ? widget.onOverlayTap(context)
+                : null,
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
@@ -80,6 +84,7 @@ class _ShowcaseState extends BaseShowcaseState<Showcase> {
                     color: widget.overlayColor,
                     rect: PositionController(context).getRect(),
                     shapeBorder: widget.shapeBorder,
+                    overlayPadding: widget.overlayPadding
                   ),
                 ),
               ),
@@ -90,9 +95,10 @@ class _ShowcaseState extends BaseShowcaseState<Showcase> {
               shapeBorder: widget.shapeBorder,
               containerSize: containerSize,
               childPadding: widget.childPadding,
+              customPadding: widget.overlayPadding,
               bottomTip: widget.bottomTip,
               tip: widget.tip,
-              topTip: widget.tip,
+              topTip: widget.topTip,
             ),
           ],
         ),
@@ -119,6 +125,7 @@ class TargetWidget extends StatelessWidget {
   final Size containerSize;
   final ShapeBorder shapeBorder;
   final bool childPadding;
+  final EdgeInsets customPadding;
 
   final Widget topTip;
   final Widget bottomTip;
@@ -132,6 +139,7 @@ class TargetWidget extends StatelessWidget {
     this.containerSize,
     this.childPadding = true,
     this.topTip,
+    this.customPadding = EdgeInsets.zero,
     this.bottomTip,
     this.tip
   }) : super(key: key);
@@ -139,8 +147,8 @@ class TargetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const padding = 16;
-    final circleHeight = size.height + padding;
-    final circleWidth = size.width + padding;
+    final circleHeight = size.height + padding + customPadding.top + customPadding.bottom;
+    final circleWidth = size.width + padding + customPadding.left + customPadding.right;
     double top = offset.dy - circleHeight/2;
     double bottom = containerSize.height - offset.dy - (circleHeight/2);
     double left = offset.dx - circleWidth/2;
@@ -202,16 +210,10 @@ class TargetWidget extends StatelessWidget {
       width: !childPadding 
         ? maxWidth
         : useReversedX ? left + circleWidth : right + circleWidth,
-      child: Stack(
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: useReversedY 
-              ? children
-              : children 
-          ),
-        ]
-      )
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: children
+      ),
     );
   }
 }

@@ -136,9 +136,9 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   }
 
   void addToOverlay(OverlayEntry overlayEntry) async {
-    Overlay.of(context).insert(overlayEntry);
+    Overlay.of(context)?.insert(overlayEntry);
     final overlay = Overlay.of(context);
-    if (overlayEntry == null)
+    if (overlayEntry == null && overlay != null)
       WidgetsBinding.instance
           .addPostFrameCallback((_) => overlay.insert(overlayEntry));
   }

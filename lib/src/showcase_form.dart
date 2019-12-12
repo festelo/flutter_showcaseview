@@ -32,9 +32,18 @@ class ShowcaseFormState extends State<ShowcaseForm> {
   List<BaseShowcaseState> _cases = [];
   int _currentCase = 0;
   bool showCases = false;
+  bool _forceShow = false;
 
   void register(BaseShowcaseState state) {
-    _cases.add(state);
+    if(!_cases.contains(state)) {
+      _cases.add(state);
+      if (_forceShow) {
+        _forceShow = false;
+        WidgetsBinding.instance.addPostFrameCallback(
+            (_) => start()
+        );
+      }
+    }
   }
 
   void unregister(BaseShowcaseState state) {
@@ -47,11 +56,17 @@ class ShowcaseFormState extends State<ShowcaseForm> {
       _cases[_currentCase].context == context;
   }
 
+  void _startSilent() {
+    _currentCase = 0;
+    showCases = true;
+  }
   void start() {
-    setState(() {
-      _currentCase = 0;
-      showCases = true;
-    });
+    if (_cases.length == 0) _forceShow = true;
+    else {
+      setState(() {
+        _startSilent();
+      });
+    }
   }
 
   void complete() {
