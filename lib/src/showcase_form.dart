@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'base_showcase_state.dart';
@@ -33,6 +35,7 @@ class ShowcaseFormState extends State<ShowcaseForm> {
   int _currentCase = 0;
   bool showCases = false;
   bool _forceShow = false;
+  Completer _completer;
 
   void register(BaseShowcaseState state) {
     if(!_cases.contains(state)) {
@@ -40,7 +43,7 @@ class ShowcaseFormState extends State<ShowcaseForm> {
       if (_forceShow) {
         _forceShow = false;
         WidgetsBinding.instance.addPostFrameCallback(
-            (_) => start()
+            (_) => show()
         );
       }
     }
@@ -60,13 +63,18 @@ class ShowcaseFormState extends State<ShowcaseForm> {
     _currentCase = 0;
     showCases = true;
   }
-  void start() {
+  Future<void> show() async {
+    if (_completer != null && !_completer.isCompleted) {
+      dismiss();
+    }
+    _completer = Completer();
     if (_cases.length == 0) _forceShow = true;
     else {
       setState(() {
         _startSilent();
       });
     }
+    await _completer.future;
   }
 
   void complete() {
@@ -94,6 +102,7 @@ class ShowcaseFormState extends State<ShowcaseForm> {
   void _cleanupAfterSteps() {
     _currentCase = 0;
     showCases = false;
+    _completer?.complete();
   }
 
   @override
