@@ -43,7 +43,7 @@ class ShowcaseFormState extends State<ShowcaseForm> {
       if (_forceShow) {
         _forceShow = false;
         WidgetsBinding.instance.addPostFrameCallback(
-            (_) => show()
+            (_) => _showWithoutDismissing()
         );
       }
     }
@@ -63,11 +63,9 @@ class ShowcaseFormState extends State<ShowcaseForm> {
     _currentCase = 0;
     showCases = true;
   }
-  Future<void> show() async {
-    if (_completer != null && !_completer.isCompleted) {
-      dismiss();
-    }
-    _completer = Completer();
+
+  Future<void> _showWithoutDismissing() async {
+    if(_completer == null) _completer = Completer();
     if (_cases.length == 0) _forceShow = true;
     else {
       setState(() {
@@ -75,6 +73,13 @@ class ShowcaseFormState extends State<ShowcaseForm> {
       });
     }
     await _completer.future;
+  }
+
+  Future<void> show() async {
+    if (_completer != null && !_completer.isCompleted) {
+      dismiss();
+    }
+    await _showWithoutDismissing();
   }
 
   void complete() {
