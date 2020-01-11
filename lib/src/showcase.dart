@@ -199,7 +199,7 @@ class TargetWidget extends StatelessWidget {
         SizedBox(height: 10),
         Container(height: 
           bottom-10, 
-          child: topTip == null ? null : bottomTip,
+          child: bottomTip == null ? null : bottomTip,
         ),
       ]
     ];
