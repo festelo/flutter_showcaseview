@@ -22,7 +22,7 @@ class ShowcaseForm extends StatefulWidget {
 
   static ShowcaseFormState of(BuildContext context) {
     final _ShowcaseFormScope scope = 
-      context.inheritFromWidgetOfExactType(_ShowcaseFormScope);
+      context.dependOnInheritedWidgetOfExactType<_ShowcaseFormScope>();
     return scope?._formState;
   }
 

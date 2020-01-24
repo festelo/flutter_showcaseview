@@ -17,6 +17,8 @@ class Showcase extends StatefulWidget {
   final Color overlayColor;
   final EdgeInsets overlayPadding;
   final void Function(BuildContext context) onOverlayTap;
+  final void Function() onShowed;
+  final void Function() onClosed;
   final ShapeBorder shapeBorder;
   final bool childPadding;
 
@@ -27,6 +29,8 @@ class Showcase extends StatefulWidget {
     this.tip,
     this.shapeBorder,
     this.key,
+    this.onShowed,
+    this.onClosed,
     this.overlayPadding = EdgeInsets.zero,
     this.overlayColor = Colors.black87,
     this.onOverlayTap,
@@ -54,9 +58,20 @@ class _ShowcaseState extends BaseShowcaseState<Showcase> {
   ///
   void showOverlayIfActive() {
     final active = ShowcaseForm.of(context).caseActive(context);
+    if (_showShowCase == active) return;
     setState(() {
       _showShowCase = active;
     });
+    
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        if (active) {
+          if (widget.onShowed != null) widget.onShowed();
+        } else {
+          if (widget.onClosed != null) widget.onClosed();
+        }
+      }
+    );
   }
 
   buildOverlayOnTarget(
