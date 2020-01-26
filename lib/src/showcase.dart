@@ -57,7 +57,9 @@ class _ShowcaseState extends BaseShowcaseState<Showcase> {
   /// show overlay if there is any target widget
   ///
   void showOverlayIfActive() {
-    final active = ShowcaseForm.of(context).caseActive(context);
+    final showcase = ShowcaseForm.of(context);
+    if (showcase == null) return;
+    final active = showcase.caseActive(context);
     if (_showShowCase == active) return;
     setState(() {
       _showShowCase = active;
